@@ -1,38 +1,40 @@
 <template>
-  <div class="push_home">
-    <video autoplay loop muted class="push_video">
-      <source src="~assets/img/home_bg.mp4" type="video/mp4">
-    </video>
+  <div class="push_index">
+    <pvideo/>
     <div class="push_welcome">
       <div class="welcome-title">
         <img src="~assets/img/welcome-icon.png" alt="">
         <span>推股送金</span>
       </div>
       <div class="welcome-content">
-        <img src="~assets/img/title-icon.png" alt="">
-        <el-button class="welcome-button" type="warning">立即体验</el-button>
+        <img src="~assets/img/index-icon.png" alt="">
+        <el-button class="welcome-button" type="warning" @click="welcome_button()">立即体验</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Pvideo from 'components/content/Video'
 export default {
-  name: 'Home',
+  name: 'Index',
+  components: {
+    Pvideo
+  },
   data(){
     return{
       
+    }
+  },
+  methods: {
+    welcome_button(){
+      this.$router.push('/register')
     }
   }
 }
 </script>
 
 <style scoped>
-.push_video{
-  min-width: 100%;
-  min-height: 100%;
-  object-fit: cover;
-}
 .push_welcome{
   width: 100%;
   position: absolute;
@@ -62,9 +64,7 @@ export default {
 .push_welcome .welcome-content img{
   width: 728px;
   height: 410px;
-  margin-top: 30px;
-  margin-left: 80px;
-  /* display: block; */
+  margin: 30px 0;
 }
 .push_welcome .welcome-content .welcome-button{
   display: block;
