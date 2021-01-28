@@ -9,18 +9,32 @@
       <img src="~assets/img/clip.png" alt="">
     </div>
     <el-form :model="registerForm" :rules="rules" ref="registerForm" label-position="top" class="push-registerForm">
-      <el-form-item label="用户名" prop="name">
-        <el-input type="text" v-model="registerForm.name" placeholder="请输入用户名"></el-input>
-      </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input type="text" v-model="registerForm.phone" placeholder="请输入手机号"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input type="text" v-model="registerForm.email" placeholder="请输入邮箱"></el-input>
-      </el-form-item>
+      <div class="register-form">
+        <div class="form-left">
+          <el-form-item label="用户名" prop="name">
+            <el-input type="text" v-model="registerForm.name" placeholder="请输入用户名"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号" prop="phone">
+            <el-input type="text" v-model="registerForm.phone" placeholder="请输入手机号"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input type="text" v-model="registerForm.email" placeholder="请输入邮箱"></el-input>
+          </el-form-item>
+        </div>
+        <div class="form-right">
+          <el-form-item label="您平时会关注的股票信息" prop="stockMessage">
+            <el-checkbox-group v-model="registerForm.stockMessage">
+              <el-checkbox label="实时行情"></el-checkbox>
+              <el-checkbox label="股评/热帖"></el-checkbox>
+              <el-checkbox label="热股"></el-checkbox>
+              <el-checkbox label="其他"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </div>
+      </div>
       <el-form-item label="您所关注的港股" prop="stockType">
         <el-tag
           :key="tag"
@@ -68,7 +82,8 @@ export default {
         phone: '',
         password: '',
         email: '',
-        stockType: ''
+        stockType: '',
+        stockMessage: []
       },
       rules: {
         name: [{ required: true, validator: validator.validateName, trigger: 'change' }],
@@ -136,17 +151,20 @@ export default {
 }
 .push-registerForm{
   height: 80%;
-  width: 50%;
+  width: 45%;
   border-radius: 30px;
   border: 2px solid #eee;
   box-shadow:0px 0px 20px -10px #888;
   position: relative;
   margin: -45px auto;
-  padding: 70px 50px;
+  padding: 70px;
 }
-.el-input__inner{
-  border-color: #E6A23C;
-  color: #E6A23C;
+.register-form{
+  display: flex;
+  justify-content: space-between;
+}
+.register-form .form-left,.register-form .form-right{
+  width: 40%;
 }
 .el-button--default:hover,.el-button--default:focus{
   background-color: rgb(253,246,236);
