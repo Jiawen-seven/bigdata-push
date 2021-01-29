@@ -30,7 +30,8 @@
               <el-checkbox label="实时行情"></el-checkbox>
               <el-checkbox label="股评/热帖"></el-checkbox>
               <el-checkbox label="热股"></el-checkbox>
-              <el-checkbox label="其他"></el-checkbox>
+              <el-checkbox label="其他" @change="else_input()"></el-checkbox>
+              <input v-show="isShow" ref="else-input" class="else-input" type="text">
             </el-checkbox-group>
           </el-form-item>
         </div>
@@ -74,6 +75,7 @@ export default {
   },
   data() {
     return {
+      isShow: false,
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
@@ -82,19 +84,24 @@ export default {
         phone: '',
         password: '',
         email: '',
-        stockType: '',
-        stockMessage: []
+        stockMessage: [],
+
+        stockType: [],
       },
       rules: {
         name: [{ required: true, validator: validator.validateName, trigger: 'change' }],
         phone: [{ required: true, validator: validator.validatePhone, trigger: 'change' }],
         password: [{ required: true, validator: validator.validatePassword, trigger: 'change' }],
         email: [{ required: true, validator: validator.validateEmail, trigger: 'change' }],
-        stockType: [{ required: true, message:'请至少输入一个您所关注股票', trigger: 'change' }]
+        stockMessage: [{ type: 'array', required: true, message: '请至少选择一个股票信息', validator: validator.validateStock, trigger: 'change' }],
+        stockType: [{ type: 'array', required: true, message:'请至少输入一个您所关注股票', trigger: 'change' }],
       }
     };
   },
   methods: {
+    else_input(){
+      this.isShow = true
+    },
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
     },
@@ -130,7 +137,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .register-line,.register-icon{
   display: flex;
   align-items: center;
@@ -166,11 +173,41 @@ export default {
 .register-form .form-left,.register-form .form-right{
   width: 40%;
 }
+.form-right .else-input{
+  border: none;
+  border-bottom: 1px solid #E6A23C;
+  outline:none;
+  margin-left: 10px;
+}
+
+/**针对按钮的样式 */
 .el-button--default:hover,.el-button--default:focus{
   background-color: rgb(253,246,236);
   border-color: #E6A23C;
   color: #E6A23C;
 }
+
+/**针对输入框的样式 */
+.el-input__inner:focus{
+  border:1px solid #E6A23C;
+}
+
+/**针对多选框的样式 */
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+background-color: #E6A23C;
+border-color:  #E6A23C;
+}
+.el-checkbox__input.is-checked + .el-checkbox__label {
+color: #E6A23C;
+}
+.el-checkbox__inner:hover{
+  border-color: #E6A23C;
+}
+.el-checkbox__input.is-focus .el-checkbox__inner{
+border-color: #E6A23C;
+}
+
+
 .el-tag + .el-tag {
   margin-left: 10px;
 }
