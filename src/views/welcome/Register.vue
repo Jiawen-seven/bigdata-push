@@ -195,7 +195,7 @@ export default {
 <style>
 .push_register{
   height: 100%;
-  background-image: url('~assets/img/home_bg.png');
+  background-image: url('~assets/img/register_bg.png');
   background-size: cover;
   background-repeat:no-repeat;
 }

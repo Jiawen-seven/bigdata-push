@@ -50,7 +50,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 15px 40px;
+  margin: 20px 40px;
 }
 .push_welcome .welcome-title .title-left{
   display: flex;
@@ -82,7 +82,7 @@ export default {
 .push_welcome .welcome-content img{
   width: 728px;
   height: 410px;
-  margin: 30px 0;
+  margin: 80px 0;
 }
 .push_welcome .welcome-content .welcome-button{
   display: block;
