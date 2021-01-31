@@ -1,5 +1,3 @@
-import { Input } from "element-ui"
-
 const validateName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入您的用户名'))
@@ -32,6 +30,8 @@ const validateEmail = (rule, value, callback) => {
 const validatePassword = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入您的密码'))
+  } else if (value.length < 6) {
+    callback(new Error('密码不能小于6位'))
   } else {
     callback()
   }
@@ -45,11 +45,6 @@ const validatePasswordAgain = (rule, value, callback) => {
     callback()
   }
 }
-const validateStock= (rule, value, callback) => {
-  if(this.$refs.else-input.value == ''){
-    callback(new Error('“其他”的内容不能为空~'))
-  }
-}
 
 export {
   validateName,
@@ -57,5 +52,5 @@ export {
   validateEmail,
   validatePassword,
   validatePasswordAgain,
-  validateStock
+
 }

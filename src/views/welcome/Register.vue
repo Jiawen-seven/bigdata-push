@@ -5,6 +5,7 @@
       <i class="icon-line"></i>
     </div>
     <div class="register-icon">
+      <i class="icon-back" @click="goBack()"></i>
       <img src="~assets/img/clip.png" alt="">
       <img src="~assets/img/clip.png" alt="">
     </div>
@@ -12,16 +13,32 @@
       <div class="register-form">
         <div class="form-left">
           <el-form-item label="用户名" prop="name">
-            <el-input type="text" v-model="registerForm.name" placeholder="请输入用户名"></el-input>
+            <el-input type="text" v-model="registerForm.name" placeholder="请输入用户名" clearable></el-input>
           </el-form-item>
           <el-form-item label="手机号" prop="phone">
-            <el-input type="text" v-model="registerForm.phone" placeholder="请输入手机号"></el-input>
+            <el-input type="text" v-model="registerForm.phone" placeholder="请输入手机号" clearable></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="registerForm.password" placeholder="请输入密码"></el-input>
+            <el-input type="password" v-model="registerForm.password" placeholder="请输入密码" show-password clearable></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <el-input type="text" v-model="registerForm.email" placeholder="请输入邮箱"></el-input>
+            <el-input type="text" v-model="registerForm.email" placeholder="请输入邮箱" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="您最关注的港股" prop="stockType">
+            <el-autocomplete
+              popper-class="my-autocomplete"
+              v-model="registerForm.stockType"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入股票名称"
+              @select="handleSelect"
+              clearable
+              style="width: 100%">
+              <i class="el-icon-edit el-input__icon" slot="suffix"></i>
+              <template slot-scope="{ item }">
+                <div class="name">{{ item.value }}</div>
+                <span class="num">{{ "股票代码：" + item.num }}</span>
+              </template>
+            </el-autocomplete>
           </el-form-item>
         </div>
         <div class="form-right">
@@ -31,34 +48,42 @@
               <el-checkbox label="股评/热帖"></el-checkbox>
               <el-checkbox label="热股"></el-checkbox>
               <el-checkbox label="其他" @change="else_input()"></el-checkbox>
-              <input v-show="isShow" ref="else-input" class="else-input" type="text">
+              <input v-show="isShow" class="else-input" type="text">
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="您平时的看股时间" prop="stockTime">
+            <el-time-select
+              v-model="registerForm.stockTime"
+              :picker-options="{
+                start: '00:00',
+                step: '00:30',
+                end: '24:00'
+              }"
+              placeholder="请选择最常看的时间"
+              style="width: 90%">
+            </el-time-select>
+          </el-form-item>
+          <el-form-item label="您希望消息提醒的频率" prop="stockCount">
+            <el-radio-group v-model="registerForm.stockCount" @change="getValue()" style="margin-bottom: -10px">
+              <el-radio label="每天两次"></el-radio>
+              <el-radio label="每天一次"></el-radio>
+              <el-radio label="每周3-5次"></el-radio>
+              <el-radio label="每周1-2次"></el-radio>
+              <br/>
+              <el-radio label="其他"></el-radio>
+              <input v-show="ifShow" class="else-input" type="text" style="margin: -15px">
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="您希望的提醒方式" prop="stockRemind">
+            <el-checkbox-group v-model="registerForm.stockRemind">
+              <el-checkbox label="短信"></el-checkbox>
+              <el-checkbox label="邮箱"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </div>
       </div>
-      <el-form-item label="您所关注的港股" prop="stockType">
-        <el-tag
-          :key="tag"
-          v-for="tag in dynamicTags"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)">
-          {{tag}}
-        </el-tag>
-        <el-input
-          class="input-new-tag"
-          v-if="inputVisible"
-          v-model="inputValue"
-          ref="saveTagInput"
-          size="small"
-          @keyup.enter.native="handleInputConfirm"
-          @blur="handleInputConfirm"
-        >
-        </el-input>
-        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 我的股票</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="warning" @click="submitForm('registerForm')">立即创建</el-button>
+      <el-form-item style="display: flex; justify-content: flex-end">
+        <el-button type="warning" @click="submitForm('registerForm')" style="margin-right: 30px">立即创建</el-button>
         <el-button @click="resetForm('registerForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -76,48 +101,78 @@ export default {
   data() {
     return {
       isShow: false,
-      dynamicTags: [],
-      inputVisible: false,
-      inputValue: '',
+      ifShow: false,
+      stocks: [],
       registerForm: {
         name: '',
         phone: '',
         password: '',
         email: '',
+        stockType: '',
         stockMessage: [],
-
-        stockType: [],
+        stockTime:'',
+        stockCount: '',
+        stockRemind: []
       },
       rules: {
         name: [{ required: true, validator: validator.validateName, trigger: 'change' }],
         phone: [{ required: true, validator: validator.validatePhone, trigger: 'change' }],
         password: [{ required: true, validator: validator.validatePassword, trigger: 'change' }],
         email: [{ required: true, validator: validator.validateEmail, trigger: 'change' }],
-        stockMessage: [{ type: 'array', required: true, message: '请至少选择一个股票信息', validator: validator.validateStock, trigger: 'change' }],
-        stockType: [{ type: 'array', required: true, message:'请至少输入一个您所关注股票', trigger: 'change' }],
-      }
+        stockType: [{ required: true, message: '请输入您最关注的股票名', trigger: 'change' }],
+        stockMessage: [{ type: 'array', required: true, message: '请至少选择一个股票信息', trigger: 'change' }],
+        stockTime: [{ required: true, message: '请选择您最常看股的时间', trigger: 'change'}],
+        stockCount: [{ required: true, message: '请选择消息提醒频率', trigger: 'change' }],
+        stockRemind: [{ type: 'array', required: true, message: '请至少选择一个方式', trigger: 'change' }]
+      },
     };
   },
+  mounted() {
+    this.stocks = this.loadAll();
+  },
   methods: {
+    goBack(){
+      this.$router.push('/index')
+    },
     else_input(){
-      this.isShow = true
+      this.isShow = !this.isShow
     },
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-    },
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
-    },
-    handleInputConfirm() {
-      let inputValue = this.inputValue;
-      if (inputValue) {
-        this.dynamicTags.push(inputValue);
+    getValue(){
+      if(this.registerForm.stockCount == '其他'){
+        this.ifShow = true
+      } else {
+        this.ifShow = false
       }
-      this.inputVisible = false;
-      this.inputValue = '';
+    },
+    querySearch(queryString, cb) {
+      var stocks = this.stocks;
+      var results = queryString ? stocks.filter(this.createFilter(queryString)) : stocks;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (stock) => {
+        return (stock.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    loadAll() {
+      return [
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" },
+        { "value": "华亿金控", "num": "08123" }
+      ];
+    },
+    handleSelect(item) {
+      console.log(item);
     },
 
     submitForm(formName) {
@@ -138,6 +193,12 @@ export default {
 </script>
 
 <style>
+.push_register{
+  height: 100%;
+  background-image: url('~assets/img/home_bg.png');
+  background-size: cover;
+  background-repeat:no-repeat;
+}
 .register-line,.register-icon{
   display: flex;
   align-items: center;
@@ -153,11 +214,22 @@ export default {
   position: relative;
   z-index: 2;
 }
+.register-icon .icon-back{
+  width: 60px;
+  height: 50px;
+  background-image: url('~assets/img/back.png');
+  background-size: cover;
+  background-repeat:no-repeat;
+  position: absolute;
+  top: -50px;
+  right: 20px;
+  cursor: pointer;
+}
 .register-icon img{
   width: 5%;
 }
 .push-registerForm{
-  height: 80%;
+  height: 65%;
   width: 45%;
   border-radius: 30px;
   border: 2px solid #eee;
@@ -178,6 +250,7 @@ export default {
   border-bottom: 1px solid #E6A23C;
   outline:none;
   margin-left: 10px;
+  color: #606266;
 }
 
 /**针对按钮的样式 */
@@ -190,6 +263,21 @@ export default {
 /**针对输入框的样式 */
 .el-input__inner:focus{
   border:1px solid #E6A23C;
+}
+.el-input{
+  width: 90%;
+}
+.my-autocomplete li{
+  line-height: normal;
+  padding: 7px;
+}
+.my-autocomplete li .name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.my-autocomplete li .num {
+  font-size: 12px;
+  color: #b4b4b4;
 }
 
 /**针对多选框的样式 */
@@ -206,21 +294,20 @@ color: #E6A23C;
 .el-checkbox__input.is-focus .el-checkbox__inner{
 border-color: #E6A23C;
 }
+.el-checkbox-group{
+  margin: -10px 0;
+}
 
+/**针对单选框的样式 */
+.el-radio{
+  margin-bottom: 20px;
+}
+.el-radio__input.is-checked + .el-radio__label {
+  color: #E6A23C;
+}
+.el-radio__input.is-checked .el-radio__inner {
+  background: #E6A23C;
+  border-color:  #E6A23C;
+}
 
-.el-tag + .el-tag {
-  margin-left: 10px;
-}
-.button-new-tag {
-  margin-left: 10px;
-  height: 32px;
-  line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.input-new-tag {
-  width: 90px;
-  margin-left: 10px;
-  vertical-align: bottom;
-}
 </style>

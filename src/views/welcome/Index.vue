@@ -3,8 +3,14 @@
     <pvideo/>
     <div class="push_welcome">
       <div class="welcome-title">
-        <img src="~assets/img/welcome-icon.png" alt="">
-        <span>推股送金</span>
+        <div class="title-left">
+          <img src="~assets/img/welcome-icon.png" alt="">
+          <span>推股送金</span>
+        </div>
+        <div class="title-right">
+          <el-link type="warning" :underline="false" href="/login">登录</el-link>
+          <el-link type="warning" :underline="false" href="/register">注册</el-link>
+        </div>
       </div>
       <div class="welcome-content">
         <img src="~assets/img/index-icon.png" alt="">
@@ -43,19 +49,31 @@ export default {
 .push_welcome .welcome-title{
   display: flex;
   align-items: center;
-  margin: 20px 40px;
+  justify-content: space-between;
+  margin: 15px 40px;
 }
-.push_welcome .welcome-title img{
+.push_welcome .welcome-title .title-left{
+  display: flex;
+  align-items: center;
+}
+.push_welcome .welcome-title .title-left img{
   width: 100px;
   height: 90px;
 }
-.push_welcome .welcome-title span{
+.push_welcome .welcome-title .title-left span{
   color: white;
   font-size: 30px;
   letter-spacing: 4px;
   padding-left: 10px;
   font-family: Microsoft JhengHei;
   font-weight: bold;
+}
+.push_welcome .welcome-title .title-right .el-link{
+  font-size: 20px;
+  padding: 10px;
+}
+.push_welcome .welcome-title .el-link:hover{
+  color: rgba(255,255,255,0.8);
 }
 .push_welcome .welcome-content{
   width: 100%;
