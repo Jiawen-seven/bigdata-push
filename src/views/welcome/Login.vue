@@ -18,8 +18,8 @@
         </el-form-item>
       </el-form>
       <div class="login-footer">
-        <span>没有账号。立即注册</span>
-        <span>忘记密码？</span>
+        <span>没有账号，<a href="/register">立即注册</a></span>
+        <a href="">忘记密码？</a>
       </div>
     </div>
   </div>
@@ -114,6 +114,19 @@ export default {
   font-size: 24px;
   color: #E6A23C;
   margin-bottom: 40px;
+}
+.login_form .login-footer{
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #888;
+}
+.login_form .login-footer a{
+  text-decoration: none;
+  color: #E6A23C;
+}
+.login_form .login-footer a:focus,.login_form .login-footer a:hover{
+  color:rgb(231, 189, 125);
 }
 /**针对输入框的样式 */
 .el-input__inner:focus{

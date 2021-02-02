@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     goBack(){
-      this.$router.push('/index')
+      history.back()
     },
     else_input(){
       this.isShow = !this.isShow
