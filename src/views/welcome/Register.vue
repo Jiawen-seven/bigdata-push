@@ -83,7 +83,8 @@
         </div>
       </div>
       <el-form-item style="display: flex; justify-content: flex-end">
-        <el-button type="warning" @click="submitForm('registerForm')" style="margin-right: 30px">立即创建</el-button>
+        <span style="color: #888;">已有账号？<a href="/login">去登录</a></span>
+        <el-button type="warning" @click="submitForm('registerForm')" style="margin: 0 20px;">立即创建</el-button>
         <el-button @click="resetForm('registerForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -253,61 +254,70 @@ export default {
   color: #606266;
 }
 
+/**针对输入框的样式 */
+.form-left .el-input__inner:focus{
+  border:1px solid #E6A23C;
+}
+.form-left .el-input{
+  width: 90%;
+}
+.form-left .my-autocomplete li{
+  line-height: normal;
+  padding: 7px;
+}
+.form-left .my-autocomplete li .name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.form-left .my-autocomplete li .num {
+  font-size: 12px;
+  color: #b4b4b4;
+}
+
 /**针对按钮的样式 */
-.el-button--default:hover,.el-button--default:focus{
+.push-registerForm .el-button--default:hover,.el-button--default:focus{
   background-color: rgb(253,246,236);
   border-color: #E6A23C;
   color: #E6A23C;
 }
 
-/**针对输入框的样式 */
-.el-input__inner:focus{
-  border:1px solid #E6A23C;
-}
-.el-input{
-  width: 90%;
-}
-.my-autocomplete li{
-  line-height: normal;
-  padding: 7px;
-}
-.my-autocomplete li .name {
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.my-autocomplete li .num {
-  font-size: 12px;
-  color: #b4b4b4;
-}
-
 /**针对多选框的样式 */
-.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+.form-right .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
 background-color: #E6A23C;
 border-color:  #E6A23C;
 }
-.el-checkbox__input.is-checked + .el-checkbox__label {
+.form-right .el-checkbox__input.is-checked + .el-checkbox__label {
 color: #E6A23C;
 }
-.el-checkbox__inner:hover{
+.form-right .el-checkbox__inner:hover{
   border-color: #E6A23C;
 }
-.el-checkbox__input.is-focus .el-checkbox__inner{
+.form-right .el-checkbox__input.is-focus .el-checkbox__inner{
 border-color: #E6A23C;
 }
-.el-checkbox-group{
+.form-right .el-checkbox-group{
   margin: -10px 0;
 }
 
 /**针对单选框的样式 */
-.el-radio{
+.form-right .el-radio{
   margin-bottom: 20px;
 }
-.el-radio__input.is-checked + .el-radio__label {
+.form-right .el-radio__input.is-checked + .el-radio__label {
   color: #E6A23C;
 }
-.el-radio__input.is-checked .el-radio__inner {
+.form-right .el-radio__input.is-checked .el-radio__inner {
   background: #E6A23C;
   border-color:  #E6A23C;
+}
+
+/**针对a标签 */
+.push-registerForm a:focus,.push-registerForm a:hover{
+  color:rgb(231, 189, 125);
+}
+.push-registerForm a{
+  color: #E6A23C;
+  text-decoration: none;
 }
 
 </style>

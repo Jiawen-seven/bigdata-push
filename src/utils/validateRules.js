@@ -1,3 +1,10 @@
+const validateAccount = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入您的用户名/手机号'))
+  } else {
+    callback()
+  }
+}
 const validateName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入您的用户名'))
@@ -36,21 +43,11 @@ const validatePassword = (rule, value, callback) => {
     callback()
   }
 }
-const validatePasswordAgain = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请再次输入密码'))
-  } else if (value !== this.loginForm.password) {
-    callback(new Error('两次输入密码不一致!'))
-  } else {
-    callback()
-  }
-}
 
 export {
+  validateAccount,
   validateName,
   validatePhone,
   validateEmail,
   validatePassword,
-  validatePasswordAgain,
-
 }

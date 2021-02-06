@@ -4,59 +4,83 @@
     <span class="push-title">金融大数据分析与智能推送系统</span>
     <div class="login_form">
       <div class="login_title">
-        账号密码登录
+        <span v-show="isShow">账号密码登录</span>
+        <span v-show="!isShow">找回密码</span>
       </div>
-      <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" class="push_loginForm">
+      <el-form v-show="isShow" :model="loginForm" status-icon :rules="rules" ref="loginForm" class="push_loginForm">
         <el-form-item prop="account">
-          <el-input type="text" v-model="loginForm.account" placeholder="请输入账号" clearable></el-input>
+          <el-input type="text" v-model="loginForm.account" placeholder="请输入用户名/手机号" clearable></el-input>
         </el-form-item>
-        <el-form-item prop="pass">
-          <el-input type="password" v-model="loginForm.pass" placeholder="请输入密码" clearable></el-input>
+        <el-form-item prop="password">
+          <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="warning" @click="submitForm('loginForm')">提交</el-button>
+          <el-button type="warning" @click="submitForm('loginForm')">登 录</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form v-show="!isShow" :model="forgetForm" status-icon :rules="rules" ref="forgetForm" class="push_loginForm">
+        <el-form-item prop="phone">
+          <el-input type="text" v-model="forgetForm.phone" placeholder="请输入手机号" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input type="password" v-model="forgetForm.password" placeholder="请输入新密码" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="newpassword">
+          <el-input type="password" v-model="forgetForm.newpassword" placeholder="请再次输入新密码" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="warning" @click="submitForm('forgetForm')">找 回</el-button>
         </el-form-item>
       </el-form>
       <div class="login-footer">
-        <span>没有账号，<a href="/register">立即注册</a></span>
-        <a href="">忘记密码？</a>
+        <span v-show="isShow">没有账号，<a href="/register">立即注册</a></span>
+        <a v-show="isShow" @click="forget()">找回密码</a>
+        <span v-show="!isShow" />
+        <a v-show="!isShow" @click="forget()">返回登录</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as validator from 'utils/validateRules'
 export default {
   name: 'Login',
   data () {
-    var validatePass = (rule, value, callback) => {
+    const validatePasswordAgain = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'));
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.forgetForm.password) {
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
-      }
-    }
-    var validateAccount = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入账号'));
-      } else {
-        callback();
+        callback()
       }
     }
     return {
+      isShow: true,
       loginForm: {
         account: '',
-        pass: '',
+        password: '',
+      },
+      forgetForm: {
+        phone: '',
+        password: '',
+        newpassword: ''
       },
       rules: {
-        account: [{validator: validateAccount, trigger: 'change'}],
-        pass: [{ validator: validatePass, trigger: 'change' }],
-      }
+        account: [{validator: validator.validateAccount, trigger: 'change'}],
+        phone: [{validator: validator.validatePhone, trigger: 'change'}],
+        password: [{ validator: validator.validatePassword, trigger: 'change' }],
+        newpassword: [{ validator: validatePasswordAgain, trigger: 'change' }]
+      },
     }
   },
   methods: {
     goBack(){
       this.$router.push('/index')
+    },
+    forget(){
+      this.isShow = !this.isShow;
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -124,19 +148,21 @@ export default {
 .login_form .login-footer a{
   text-decoration: none;
   color: #E6A23C;
+  cursor: pointer;
 }
 .login_form .login-footer a:focus,.login_form .login-footer a:hover{
   color:rgb(231, 189, 125);
 }
 /**针对输入框的样式 */
-.el-input__inner:focus{
+.push_loginForm .el-input__inner:focus{
   border:1px solid #E6A23C;
 }
-.el-input__inner{
+.push_loginForm .el-input__inner{
   height: 50px;
 }
-.el-button{
+.push_loginForm .el-button{
   width: 100%;
+  height: 45px;
   margin: 20px 0 0;
 }
 </style>
