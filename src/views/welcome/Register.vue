@@ -83,7 +83,7 @@
         </div>
       </div>
       <el-form-item style="display: flex; justify-content: flex-end">
-        <span style="color: #888;">已有账号？<a href="/login">去登录</a></span>
+        <span style="color: #888;">已有账号，<a href="/login">立即登录</a></span>
         <el-button type="warning" @click="submitForm('registerForm')" style="margin: 0 20px;">立即创建</el-button>
         <el-button @click="resetForm('registerForm')">重置</el-button>
       </el-form-item>

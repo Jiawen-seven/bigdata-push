@@ -34,7 +34,7 @@
       </el-form>
       <div class="login-footer">
         <span v-show="isShow">没有账号，<a href="/register">立即注册</a></span>
-        <a v-show="isShow" @click="forget()">找回密码</a>
+        <a v-show="isShow" @click="forget()">忘记密码？</a>
         <span v-show="!isShow" />
         <a v-show="!isShow" @click="forget()">返回登录</a>
       </div>
