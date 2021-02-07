@@ -48,8 +48,15 @@ router.beforeEach((to, from, next) => {
   if(to.meta.requiresAuth){
     if(token){
       next();
+    } else{
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath } //将刚刚要去的path作为参数，方便登录成功后直接跳转到该路由
+      });
     }
+  } else {
+    next();
   }
-})
+});
 
-export default router
+export default router;
