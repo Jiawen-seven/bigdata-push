@@ -1,17 +1,13 @@
 <template>
-   <div>
-      我是登录成功跳转的页面~
-   </div>
+  <div class="home">
+    我是主页
+  </div>
 </template>
 
 <script>
-export default {
-  name: 'Home',
-  data() {
-     return {
 
-     };
-  },
+export default {
+  name: 'Home'
 }
 </script>
 

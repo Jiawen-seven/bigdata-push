@@ -29,7 +29,7 @@
           <el-input type="password" v-model="forgetForm.newpassword" placeholder="请再次输入新密码" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="warning" @click="submitForm('forgetForm')">找 回</el-button>
+          <el-button type="warning" @click="searchForm('forgetForm')">找 回</el-button>
         </el-form-item>
       </el-form>
       <div class="login-footer">
@@ -44,6 +44,7 @@
 
 <script>
 import * as validator from 'utils/validateRules'
+
 export default {
   name: 'Login',
   data () {
@@ -77,7 +78,7 @@ export default {
   },
   methods: {
     goBack(){
-      this.$router.push('/index')
+      this.$router.push('/index');
     },
     forget(){
       this.isShow = !this.isShow;
@@ -85,7 +86,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$message({
+            type: 'success',
+            message: '登录成功！'
+          });
+          this.$router.push('/home');
         } else {
           console.log('error submit!!');
           return false;

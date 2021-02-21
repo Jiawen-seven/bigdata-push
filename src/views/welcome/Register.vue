@@ -94,6 +94,7 @@
 <script>
 import Pvideo from 'components/content/Video'
 import * as validator from 'utils/validateRules'
+
 export default {
   name: 'Register',
   components: {
@@ -179,7 +180,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$message({
+            type: 'success',
+            message: '注册成功！请前往登录~'
+          });
+          this.$router.push('/login');
         } else {
           console.log('error submit!!');
           return false;
