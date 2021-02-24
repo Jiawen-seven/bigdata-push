@@ -14,6 +14,11 @@
         <el-form-item prop="password">
           <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" clearable></el-input>
         </el-form-item>
+        <el-form-item prop="code">
+          <el-input type="text" v-model="loginForm.code" placeholder="请输入验证码" clearable>
+            <img :src="`data:image/png;base64,`+ image" alt="" class="code-img" slot="append">
+          </el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="warning" @click="submitForm('loginForm')">登 录</el-button>
         </el-form-item>
@@ -62,6 +67,7 @@ export default {
       loginForm: {
         account: '',
         password: '',
+        code: ''
       },
       forgetForm: {
         phone: '',
@@ -72,7 +78,8 @@ export default {
         account: [{validator: validator.validateAccount, trigger: 'change'}],
         phone: [{validator: validator.validatePhone, trigger: 'change'}],
         password: [{ validator: validator.validatePassword, trigger: 'change' }],
-        newpassword: [{ validator: validatePasswordAgain, trigger: 'change' }]
+        newpassword: [{ validator: validatePasswordAgain, trigger: 'change' }],
+        code: [{ message: '验证码不能为空！', trigger: 'change' }]
       },
     }
   },
@@ -163,11 +170,17 @@ export default {
   border:1px solid #E6A23C;
 }
 .push_loginForm .el-input__inner{
-  height: 50px;
+  height: 45px;
+}
+.push_loginForm .code-img{
+  height: 43px;
+  width: 130px;
+  margin-left: 48px; 
+  cursor: pointer;
 }
 .push_loginForm .el-button{
   width: 100%;
   height: 45px;
-  margin: 20px 0 0;
+  margin: 10px 0 0;
 }
 </style>
