@@ -16,7 +16,9 @@
         </el-form-item>
         <el-form-item prop="code">
           <el-input type="text" v-model="loginForm.code" placeholder="请输入验证码" clearable>
-            <img :src="`data:image/png;base64,`+ image" alt="" class="code-img" slot="append">
+            <template slot="append">
+              <img :src="`data:image/png;base64,`+ loginForm.image" alt="" class="code-img" @click="refreshImg">
+            </template>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -49,6 +51,8 @@
 
 <script>
 import * as validator from 'utils/validateRules'
+import { getLoginCore, postLoginData } from 'network/login'
+import { setToken, removeToken } from 'utils/auth'
 
 export default {
   name: 'Login',
@@ -67,7 +71,9 @@ export default {
       loginForm: {
         account: '',
         password: '',
-        code: ''
+        code: '',
+        image:'', //验证码图片
+        uuid:'', //验证时的uuid
       },
       forgetForm: {
         phone: '',
@@ -84,8 +90,40 @@ export default {
     }
   },
   methods: {
+    //网络请求的相关方法
+    getLoginCore(){
+      getLoginCore().then(res => {
+        // console.log(res)
+        this.loginForm.image = res.img;
+        this.loginForm.uuid = res.uuid;
+      })
+    },
+    postLoginData(){
+      postLoginData(this.loginForm.account,this.loginForm.password,this.loginForm.code,this.loginForm.uuid).then(res=> {
+        console.log(res)
+        if(res.code == 200 && flag == "user"){
+          this.$message({
+            type: 'success',
+            message: '亲爱的'+`${this.loginForm.account}`+'用户，欢迎您！'
+          })
+          this.$router.push('/userhome')
+        }
+        else if (res.code == 200 && flag == ""){
+          this.$message({
+            type: 'success',
+            message: `${this.loginForm.account}`+'管理员，欢迎您！'
+          })
+          this.$router.push('adminhome')
+        }
+      })
+    },
+
+    //普通方法
     goBack(){
       this.$router.push('/index');
+    },
+    refreshImg(){
+      this.getLoginCore()
     },
     forget(){
       this.isShow = !this.isShow;
@@ -93,17 +131,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$message({
-            type: 'success',
-            message: '登录成功！'
-          });
-          this.$router.push('/home');
+          this.postLoginData()
         } else {
           console.log('error submit!!');
           return false;
         }
       });
     }
+  },
+  mounted(){
+    this.getLoginCore()
   }
 }
 </script>
@@ -173,14 +210,18 @@ export default {
   height: 45px;
 }
 .push_loginForm .code-img{
-  height: 43px;
-  width: 130px;
-  margin-left: 48px; 
+  height: 45px;
   cursor: pointer;
 }
 .push_loginForm .el-button{
   width: 100%;
   height: 45px;
   margin: 10px 0 0;
+}
+.push_loginForm .el-input-group__append{
+  background-color: #FFFFFF;
+  color: #FFFFFF;
+  border: none;
+  padding: 0 0 0 10px;
 }
 </style>

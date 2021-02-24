@@ -1,13 +1,13 @@
 <template>
-  <div class="home">
-    我是主页
+  <div class="admin-home">
+    我是管理员主页
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'Home'
+  name: 'AdminHome'
 }
 </script>
 

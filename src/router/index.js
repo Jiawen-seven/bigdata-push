@@ -5,7 +5,8 @@ Vue.use(VueRouter)
 const Index = () => import('../views/welcome/Index')
 const Login = () => import('../views/welcome/Login')
 const Register = () => import('../views/welcome/Register')
-const Home = () => import('../views/home/Home')
+const UserHome = () => import('../views/userhome/UserHome')
+const AdminHome = () => import('../views/adminhome/AdminHome')
 
 const router = new VueRouter({
   routes:[
@@ -29,13 +30,21 @@ const router = new VueRouter({
       component: Register
     },
     {
-      path: '/home',
-      name: 'home',
-      component: Home,
+      path: '/userhome',
+      name: 'userhome',
+      component: UserHome,
       // meta: {
       //   requiresAuth: true
       // }
-    }
+    },
+    {
+      path: '/adminhome',
+      name: 'adminhome',
+      component: AdminHome,
+      // meta: {
+      //   requiresAuth: true
+      // }
+    },
   ],
   mode: 'history'
 });
