@@ -101,19 +101,37 @@ export default {
     postLoginData(){
       postLoginData(this.loginForm.account,this.loginForm.password,this.loginForm.code,this.loginForm.uuid).then(res=> {
         console.log(res)
-        if(res.code == 200 && flag == "user"){
+        if(res.code == 200 && res.flag == "user"){
+          setToken(res.token);
           this.$message({
             type: 'success',
             message: '亲爱的'+`${this.loginForm.account}`+'用户，欢迎您！'
           })
-          this.$router.push('/userhome')
+          this.$router.push('/userhome');
         }
-        else if (res.code == 200 && flag == ""){
+        else if (res.code == 200 && res.flag == "system"){
+          setToken(res.token);
           this.$message({
             type: 'success',
             message: `${this.loginForm.account}`+'管理员，欢迎您！'
           })
-          this.$router.push('adminhome')
+          this.$router.push('/adminhome');
+        }
+        else{
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+          if(res.msg == "用户不存在/密码错误"){
+            this.loginForm.account = '';
+            this.loginForm.password = '';
+          }
+          else {
+            this.loginForm.code = ''
+            removeToken()
+            this.getLoginCore()
+          }
+
         }
       })
     },

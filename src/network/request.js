@@ -10,9 +10,9 @@ export function request(config){
   })
   //2.axios的请求拦截
   instance.interceptors.request.use(config => {
-    // if(getToken()){
-    //   config.headers['Authorization'] = getToken()/*请求头*/
-    // }
+    if(getToken()){
+      config.headers['Authorization'] = getToken()/*请求头*/
+    }
     return config //拦截之后要记得返回
   },err => {
     return Promise.reject(err)
