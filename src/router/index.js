@@ -1,6 +1,5 @@
 import VueRouter from 'vue-router';
 import Vue from 'vue';
-import store from '../store';
 import { getToken } from 'utils/auth';
 
 Vue.use(VueRouter)
@@ -53,21 +52,15 @@ const router = new VueRouter({
 
 /* 路由拦截器 路由跳转前的操作 */
 router.beforeEach((to, from, next) => {
+  let flag = localStorage.getItem('flag')
   if(to.meta.requireAuth){ //判断该路由是否需要登录权限
     if(getToken()){ //判断当前token是否存在
-      console.log(store.state.flag)
-      if(to.path == '/adminhome' && store.state.flag == 'user'){
-        this.$message({
-          type: 'warning',
-          message: '抱歉，您没有管理权限！'
-        })
+      if(to.path == '/adminhome' && flag == 'user'){
+        alert('抱歉，您没有管理权限！')
         next({ path: '/userhome' })
       }
-      else if(to.path == '/userhome' && store.state.flag == 'system'){
-        this.$message({
-          type: 'warning',
-          message: '抱歉，您不是用户！'
-        })
+      else if(to.path == '/userhome' && flag == 'system'){
+        alert('抱歉，您不是用户！')
         next({ path: '/adminhome' })
       }
       else {

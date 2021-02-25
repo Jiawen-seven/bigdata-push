@@ -7,7 +7,7 @@
           <img src="~assets/img/welcome-icon.png" alt="">
           <span>推股送金</span>
         </div>
-        <div class="title-right" v-if="!isLogin">
+        <div class="title-right" v-if="!this.isLogin">
           <el-link type="warning" :underline="false" href="/login">登录</el-link>
           <el-link type="warning" :underline="false" href="/register">注册</el-link>
         </div>
@@ -25,6 +25,7 @@
 
 <script>
 import Pvideo from 'components/content/Video';
+import { getToken } from 'utils/auth';
 
 export default {
   name: 'Index',
@@ -46,14 +47,14 @@ export default {
   },
   mounted(){
     //判断token
-    if(this.$store.state.token){
+    if(getToken()){
       this.isLogin = true
     }
     else{
       this.isLogin = false
     }
     //判断是用户还是管理员
-    if(this.$store.state.flag == 'user'){
+    if(this.flag == 'user'){
       this.href = '/userhome'
     }
     else {
