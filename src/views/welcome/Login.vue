@@ -100,9 +100,11 @@ export default {
     },
     postLoginData(){
       postLoginData(this.loginForm.account,this.loginForm.password,this.loginForm.code,this.loginForm.uuid).then(res=> {
-        console.log(res)
+        // console.log(res)
         if(res.code == 200 && res.flag == "user"){
           setToken(res.token);
+          this.$store.commit('setName', this.loginForm.account);
+          this.$store.commit('setFlag', res.flag);
           this.$message({
             type: 'success',
             message: '亲爱的'+`${this.loginForm.account}`+'用户，欢迎您！'
@@ -111,6 +113,8 @@ export default {
         }
         else if (res.code == 200 && res.flag == "system"){
           setToken(res.token);
+          this.$store.commit('setName', this.loginForm.account);
+          this.$store.commit('setFlag', res.flag);
           this.$message({
             type: 'success',
             message: `${this.loginForm.account}`+'管理员，欢迎您！'

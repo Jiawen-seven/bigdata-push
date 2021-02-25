@@ -7,9 +7,12 @@
           <img src="~assets/img/welcome-icon.png" alt="">
           <span>推股送金</span>
         </div>
-        <div class="title-right">
+        <div class="title-right" v-if="!isLogin">
           <el-link type="warning" :underline="false" href="/login">登录</el-link>
           <el-link type="warning" :underline="false" href="/register">注册</el-link>
+        </div>
+        <div class="title-right" v-else>
+          <el-link type="warning" :underline="false" :href="href">{{this.name}}，你好~</el-link>
         </div>
       </div>
       <div class="welcome-content">
@@ -21,7 +24,8 @@
 </template>
 
 <script>
-import Pvideo from 'components/content/Video'
+import Pvideo from 'components/content/Video';
+
 export default {
   name: 'Index',
   components: {
@@ -29,12 +33,31 @@ export default {
   },
   data(){
     return{
-      
+      isLogin: false,
+      name: localStorage.getItem('name'),
+      flag: localStorage.getItem('flag'),
+      href: ''
     }
   },
   methods: {
     welcome_button(){
       this.$router.push('/register')
+    }
+  },
+  mounted(){
+    //判断token
+    if(this.$store.state.token){
+      this.isLogin = true
+    }
+    else{
+      this.isLogin = false
+    }
+    //判断是用户还是管理员
+    if(this.$store.state.flag == 'user'){
+      this.href = '/userhome'
+    }
+    else {
+      this.href = '/adminhome'
     }
   }
 }

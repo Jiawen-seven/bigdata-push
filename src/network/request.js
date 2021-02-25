@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from '../utils/auth'
+import store from '../store'
 
 //axios的拦截器的使用
 export function request(config){
@@ -10,8 +10,8 @@ export function request(config){
   })
   //2.axios的请求拦截
   instance.interceptors.request.use(config => {
-    if(getToken()){
-      config.headers['Authorization'] = getToken()/*请求头*/
+    if(store.state.token){
+      config.headers['Authorization'] = store.state.token/*请求头*/
     }
     return config //拦截之后要记得返回
   },err => {

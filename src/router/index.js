@@ -1,8 +1,7 @@
 import VueRouter from 'vue-router';
 import Vue from 'vue';
 import store from '../store';
-import { getToken } from '../utils/auth'
-
+import { getToken } from 'utils/auth';
 
 Vue.use(VueRouter)
 const Index = () => import('../views/welcome/Index')
@@ -56,7 +55,24 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if(to.meta.requireAuth){ //判断该路由是否需要登录权限
     if(getToken()){ //判断当前token是否存在
-      next()
+      console.log(store.state.flag)
+      if(to.path == '/adminhome' && store.state.flag == 'user'){
+        this.$message({
+          type: 'warning',
+          message: '抱歉，您没有管理权限！'
+        })
+        next({ path: '/userhome' })
+      }
+      else if(to.path == '/userhome' && store.state.flag == 'system'){
+        this.$message({
+          type: 'warning',
+          message: '抱歉，您不是用户！'
+        })
+        next({ path: '/adminhome' })
+      }
+      else {
+        next()
+      }
     }
     else{ //不存在token，要重新验证
       next({
@@ -68,7 +84,12 @@ router.beforeEach((to, from, next) => {
     }
   }
   else{
-    next();
+    if(getToken() && to.path == '/login'){ //如果携带token，还想去登录页面是不行的，这里直接跳到主页面，用户/管理员可从主页面进回到对应的首页，这样就不用去判断到底要跳转到用户/管理员的首页。
+      next({ path:'/index' })
+    }
+    else{
+      next();
+    }
   }
 })
 
