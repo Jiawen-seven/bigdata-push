@@ -17,7 +17,8 @@
       </div>
       <div class="welcome-content">
         <img src="~assets/img/index-icon.png" alt="">
-        <el-button class="welcome-button" type="warning" @click="welcome_button()">立即体验</el-button>
+        <el-button v-if="!this.isLogin" class="welcome-button" type="warning" @click="welcome_button()">立即体验</el-button>
+        <el-button v-else class="welcome-button" type="warning" @click="back_button()">进入首页</el-button>
       </div>
     </div>
   </div>
@@ -43,6 +44,14 @@ export default {
   methods: {
     welcome_button(){
       this.$router.push('/register')
+    },
+    back_button(){
+      if(this.flag == 'system'){
+        this.$router.push('/adminhome')
+      }
+      else{
+        this.$router.push('/userhome')
+      }
     }
   },
   mounted(){

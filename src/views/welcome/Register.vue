@@ -26,17 +26,16 @@
           </el-form-item>
           <el-form-item label="您最关注的港股" prop="stockType">
             <el-autocomplete
-              popper-class="my-autocomplete"
               v-model="registerForm.stockType"
               :fetch-suggestions="querySearch"
-              placeholder="请输入股票名称"
+              placeholder="请输入/选择股票代码"
               @select="handleSelect"
               clearable
               style="width: 100%">
               <i class="el-icon-edit el-input__icon" slot="suffix"></i>
               <template slot-scope="{ item }">
-                <div class="name">{{ item.value }}</div>
-                <span class="num">{{ "股票代码：" + item.num }}</span>
+                <div class="name">{{ item.name }}</div>
+                <span class="num">{{ "股票代码：" + item.value }}</span>
               </template>
             </el-autocomplete>
           </el-form-item>
@@ -44,10 +43,10 @@
         <div class="form-right">
           <el-form-item label="您平时会关注的股票信息" prop="stockMessage">
             <el-checkbox-group v-model="registerForm.stockMessage">
-              <el-checkbox label="实时行情"></el-checkbox>
-              <el-checkbox label="股评/热帖"></el-checkbox>
-              <el-checkbox label="热股"></el-checkbox>
-              <el-checkbox label="其他" @change="else_input()"></el-checkbox>
+              <el-checkbox label="0">实时行情</el-checkbox>
+              <el-checkbox label="1">股评/热帖</el-checkbox>
+              <el-checkbox label="2">热股</el-checkbox>
+              <el-checkbox label="3" @change="else_input()">其他</el-checkbox>
               <input v-show="isShow" class="else-input" type="text">
             </el-checkbox-group>
           </el-form-item>
@@ -65,19 +64,19 @@
           </el-form-item>
           <el-form-item label="您希望消息提醒的频率" prop="stockCount">
             <el-radio-group v-model="registerForm.stockCount" @change="getValue()" style="margin-bottom: -10px">
-              <el-radio label="每天两次"></el-radio>
-              <el-radio label="每天一次"></el-radio>
-              <el-radio label="每周3-5次"></el-radio>
-              <el-radio label="每周1-2次"></el-radio>
+              <el-radio label="0">每天两次</el-radio>
+              <el-radio label="1">每天一次</el-radio>
+              <el-radio label="2">每周3-5次</el-radio>
+              <el-radio label="3">每周1-2次</el-radio>
               <br/>
-              <el-radio label="其他"></el-radio>
+              <el-radio label="4">其他</el-radio>
               <input v-show="ifShow" class="else-input" type="text" style="margin: -15px">
             </el-radio-group>
           </el-form-item>
           <el-form-item label="您希望的提醒方式" prop="stockRemind">
             <el-checkbox-group v-model="registerForm.stockRemind">
-              <el-checkbox label="短信"></el-checkbox>
-              <el-checkbox label="邮箱"></el-checkbox>
+              <el-checkbox label="0">短信</el-checkbox>
+              <el-checkbox label="1">邮箱</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </div>
@@ -92,8 +91,9 @@
 </template>
 
 <script>
-import Pvideo from 'components/content/Video'
-import * as validator from 'utils/validateRules'
+import Pvideo from 'components/content/Video';
+import * as validator from 'utils/validateRules';
+import {postRegisterData} from 'network/register';
 
 export default {
   name: 'Register',
@@ -121,7 +121,7 @@ export default {
         phone: [{ required: true, validator: validator.validatePhone, trigger: 'change' }],
         password: [{ required: true, validator: validator.validatePassword, trigger: 'change' }],
         email: [{ required: true, validator: validator.validateEmail, trigger: 'change' }],
-        stockType: [{ required: true, message: '请输入您最关注的股票名', trigger: 'change' }],
+        stockType: [{ required: true, message: '请输入/选择您最关注的股票代码', trigger: 'change' }],
         stockMessage: [{ type: 'array', required: true, message: '请至少选择一个股票信息', trigger: 'change' }],
         stockTime: [{ required: true, message: '请选择您最常看股的时间', trigger: 'change'}],
         stockCount: [{ required: true, message: '请选择消息提醒频率', trigger: 'change' }],
@@ -133,6 +133,26 @@ export default {
     this.stocks = this.loadAll();
   },
   methods: {
+    //网络请求相关的方法
+    postRegisterData(){
+      postRegisterData(this.registerForm).then(res=> {
+        console.log(res)
+        if(res.code == 200){
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+          this.$router.push('/login')
+        }
+        else{
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        }
+      })
+    },
+    //普通方法
     goBack(){
       history.back()
     },
@@ -159,32 +179,30 @@ export default {
     },
     loadAll() {
       return [
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" },
-        { "value": "华亿金控", "num": "08123" }
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" },
+        { "value": "08123", "name": "华亿金控" }
       ];
     },
     handleSelect(item) {
       console.log(item);
     },
-
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$message({
-            type: 'success',
-            message: '注册成功！请前往登录~'
-          });
-          this.$router.push('/login');
+          this.postRegisterData()
         } else {
           console.log('error submit!!');
           return false;
@@ -266,15 +284,16 @@ export default {
 .form-left .el-input{
   width: 90%;
 }
-.form-left .my-autocomplete li{
+.el-autocomplete-suggestion li{
   line-height: normal;
-  padding: 7px;
+  padding: 10px 20px;
 }
-.form-left .my-autocomplete li .name {
+.el-autocomplete-suggestion li .name {
+  font-size: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.form-left .my-autocomplete li .num {
+.el-autocomplete-suggestion li .num {
   font-size: 12px;
   color: #b4b4b4;
 }
