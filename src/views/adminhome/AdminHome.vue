@@ -2,48 +2,51 @@
   <div class="admin-home">
     <div class="home-menu">
       <el-menu
-        default-active="2"
+        :default-active="this.$route.path"
         class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
+        @select="handleSelect"
         :collapse="isCollapse"
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
-        <el-menu-item class="menu-title">
+        <el-menu-item class="menu-title" index="/index">
           <img src="~assets/img/welcome-icon.png" alt="">
           <span slot="title">推股管理系统</span>
         </el-menu-item>
-        <el-submenu index="1">
+        <el-menu-item index="/adminhome/index">
           <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>导航一</span>
+            <i class="el-icon-s-promotion"></i>
+            <span>首页</span>
+          </template>
+        </el-menu-item>
+        <el-submenu index="2">
+          <template slot="title">
+            <i class="el-icon-s-tools"></i>
+            <span>系统管理</span>
           </template>
           <el-menu-item-group>
-            <template slot="title">分组一</template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
+            <el-menu-item index="/adminhome/user">
+              <i class="el-icon-user-solid"></i>
+              <span>用户管理</span>
+            </el-menu-item>
+            <el-menu-item index="/adminhome/admin">
+              <i class="el-icon-user"></i>
+              <span>角色管理</span>
+            </el-menu-item>
           </el-menu-item-group>
-          <el-menu-item-group title="分组2">
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">选项4</template>
-            <el-menu-item index="1-4-1">选项1</el-menu-item>
-          </el-submenu>
         </el-submenu>
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <span slot="title">导航二</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <i class="el-icon-document"></i>
-          <span slot="title">导航三</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">导航四</span>
-        </el-menu-item>
+        <el-submenu index="3">
+          <template slot="title">
+            <i class="el-icon-data-line"></i>
+            <span>系统监控</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="/adminhome/data">
+              <i class="el-icon-s-marketing"></i>
+              <span>股票数据</span>
+            </el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
       </el-menu>
     </div>
     <div class="home-content">
@@ -53,20 +56,21 @@
           <i v-else class="el-icon-s-unfold icon" @click="isFold()"></i>
         </div>
         <div class="top-right">
-          <el-dropdown  trigger="click">
+          <el-dropdown  @command="handleCommand" trigger="click">
             <span class="el-dropdown-link">
-              <i class="el-icon-arrow-down el-icon-s-custom"></i>
-              <span>seven</span>
+              <i class="el-icon-admin el-icon-s-custom"></i>
+              <span>{{name}}</span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-              <el-dropdown-item divided>退出登录</el-dropdown-item>
+              <el-dropdown-item command='/adminhome/center'>个人中心</el-dropdown-item>
+              <el-dropdown-item command='/index' divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
       </div>
       <div class="content-bottom">
-
+        <!--给子路由占位置的占位符-->
+        <router-view/>
       </div>
     </div>
   </div>
@@ -80,38 +84,61 @@ export default {
   name: 'AdminHome',
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      name: localStorage.getItem('name')
     };
   },
   methods: {
-    logout(){
-      this.$confirm('此操作将退出该系统, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        //1.清除localStorage 和 token
-        localStorage.clear();
-        removeToken()//本地cookie中的token
-        this.getLoginOut()//后端中的token
-        //2.回到index页面
-        this.$router.push('/index')
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '您已取消退出~'
-        });          
-      });
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key){
+      if(key == '/index'){
+        this.$router.push('/index');
+      }
+      else if (key == '/adminhome/index'){
+        this.$router.push('/adminhome/index')
+      }
+      else if (key == '/adminhome/user'){
+        this.$router.push('/adminhome/user')
+      }
+      else if (key == '/adminhome/admin'){
+        this.$router.push('/adminhome/admin')
+      }
+      else{
+        this.$router.push('/adminhome/data')
+      }
     },
     isFold(){
       this.isCollapse = !this.isCollapse
     },
+    handleCommand(command) {
+      if(command == '/index'){
+        this.$confirm('此操作将退出该系统, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '退出成功!'
+          });
+          //1.清除localStorage 和 token
+          localStorage.clear();
+          removeToken()//本地cookie中的token
+          this.getLoginOut()//后端中的token
+          //2.回到index页面
+          this.$router.push(command)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出~'
+          });          
+        });
+      }
+      else{
+        this.$router.push(command)
+      }
+    },
+
+
     //网络请求相关的方法
     getLoginOut(){
       getLoginOut().then(res =>{
@@ -181,8 +208,8 @@ export default {
 .el-dropdown-link:hover{
   color: #E6A23C;
 }
-.el-icon-arrow-down {
-  font-size: 25px;
+.el-icon-admin {
+  font-size: 30px;
   margin-right: 5px;
 }
 .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover{

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!--给路由的占位置的占位符-->
     <router-view/>
   </div>
 </template>

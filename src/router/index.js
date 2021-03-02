@@ -8,6 +8,11 @@ const Login = () => import('../views/welcome/Login')
 const Register = () => import('../views/welcome/Register')
 const UserHome = () => import('../views/userhome/UserHome')
 const AdminHome = () => import('../views/adminhome/AdminHome')
+const AdminCenter = () => import('../views/adminhome/AdminCenter')
+const AdminIndex = () => import('../views/adminhome/AdminIndex.vue')
+const UserManage = () => import('../views/adminhome/UserManage.vue')
+const AdminManage = () => import('../views/adminhome/AdminManage.vue')
+const AdminData = () => import('../views/adminhome/AdminData.vue')
 
 const router = new VueRouter({
   routes:[
@@ -42,6 +47,28 @@ const router = new VueRouter({
       path: '/adminhome',
       name: 'adminhome',
       component: AdminHome,
+      children: [
+        { 
+          path: 'center',
+          component: AdminCenter
+        },
+        { 
+          path: 'index',
+          component: AdminIndex
+        },
+        { 
+          path: 'user',
+          component: UserManage
+        },
+        { 
+          path: 'admin',
+          component: AdminManage
+        },
+        { 
+          path: 'data',
+          component: AdminData
+        }
+      ],
       meta: {
         requireAuth: true
       }
