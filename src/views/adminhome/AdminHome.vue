@@ -14,10 +14,8 @@
           <span slot="title">推股管理系统</span>
         </el-menu-item>
         <el-menu-item index="/adminhome/index">
-          <template slot="title">
-            <i class="el-icon-s-promotion"></i>
-            <span>首页</span>
-          </template>
+          <i class="el-icon-s-promotion"></i>
+          <span slot="title">首页</span>
         </el-menu-item>
         <el-submenu index="2">
           <template slot="title">
@@ -116,10 +114,6 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '退出成功!'
-          });
           //1.清除localStorage 和 token
           localStorage.clear();
           removeToken()//本地cookie中的token
@@ -137,8 +131,6 @@ export default {
         this.$router.push(command)
       }
     },
-
-
     //网络请求相关的方法
     getLoginOut(){
       getLoginOut().then(res =>{
@@ -161,10 +153,10 @@ export default {
 .home-menu{
   background-color: #545c64;
 }
-.el-menu-vertical-demo{
+.home-menu .el-menu-vertical-demo{
   border: none;
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.home-menu .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 210px;
   min-height: 400px;
 }
@@ -215,5 +207,8 @@ export default {
 .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover{
   background-color: #feffec;
   color: #E6A23C;
+}
+.el-menu-item-group__title{
+  padding: 0;
 }
 </style>

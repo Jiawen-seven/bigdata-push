@@ -9,13 +9,13 @@
       </div>
       <el-form v-show="isShow" :model="loginForm" status-icon :rules="rules" ref="loginForm" class="push_loginForm">
         <el-form-item prop="account">
-          <el-input type="text" v-model="loginForm.account" placeholder="请输入用户名/手机号" clearable></el-input>
+          <el-input type="text" v-model="loginForm.account" placeholder="请输入用户名" clearable @keyup.enter.native="submitForm('loginForm')"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" clearable></el-input>
+          <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" clearable @keyup.enter.native="submitForm('loginForm')"></el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <el-input type="text" v-model="loginForm.code" placeholder="请输入验证码" clearable>
+          <el-input type="text" v-model="loginForm.code" placeholder="请输入验证码" clearable @keyup.enter.native="submitForm('loginForm')">
             <template slot="append">
               <img :src="`data:image/png;base64,`+ loginForm.image" alt="" class="code-img" @click="refreshImg">
             </template>
