@@ -42,32 +42,39 @@
     </div>
     <div class="index-bottom">
       <div class="bottom-left">
-        <div class="clock">
-          打卡
-        </div>
-        <div class="plan">
-          每日计划
-        </div>
+        <el-card class="box-card clock">
+          <el-button type="info">打 卡</el-button>
+        </el-card>
+        <el-card class="box-card">
+          <span slot="header">每日计划</span>
+          放动态标签即可~
+        </el-card>
       </div>
       <div class="bottom-right">
-        <h3><i class="el-icon-notebook-1"></i> 员工手册</h3>
+        <h3><i class="el-icon-notebook-1"></i> 员工守则</h3>
         <el-collapse v-model="activeName" accordion>
-          <el-collapse-item title="一致性 Consistency" name="1">
-            <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-            <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
+          <el-collapse-item title="一、个人成长与企业发展" name="1">
+            <div>1. 熟悉并认同公司的理念与企业文化，将个人成长与企业发展相结合。</div>
+            <div>2. 有高度的责任心和事业心，处处以公司的利益为重，为公司的发展努力工作。</div>
           </el-collapse-item>
-          <el-collapse-item title="反馈 Feedback" name="2">
-            <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-            <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+          <el-collapse-item title="二、集体荣誉感" name="2">
+            <div>1. 严守公司机密，保护公司财产。</div>
+            <div>2. 自觉维护团体荣誉，有团队合作精神和强烈的集体荣誉感，确保公司的完美形象。</div>
           </el-collapse-item>
-          <el-collapse-item title="效率 Efficiency" name="3">
-            <div>简化流程：设计简洁直观的操作流程；</div>
-            <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-            <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+          <el-collapse-item title="三、职业道德" name="3">
+            <div>1. 培养良好的职业道德，对内乐于提供建议，对外不谈论公司是非。</div>
           </el-collapse-item>
-          <el-collapse-item title="可控 Controllability" name="4">
-            <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-            <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+          <el-collapse-item title="四、客户至上" name="4">
+            <div>1. 树立服务意识，始终面向市场，面向用户，提供具有“国际品质、名牌服务、物超所值”的信息产品</div>
+            <div>2. 客户至上，努力为客户提供最佳的服务和最高价值。</div>
+          </el-collapse-item>
+          <el-collapse-item title="五、不断学习" name="5">
+            <div>1. 不断学习新知识，开拓思路，具备创新能力，通过培养学习新知识使个人素质与公司发展保持同步。</div>
+            <div>2. 对工作要协调合作，对同事要互相帮助，有敬业和奉献精神，分享知识与技术。</div>
+          </el-collapse-item>
+          <el-collapse-item title="六、明确目标" name="6">
+            <div>1. 以饱满的工作热情，积极的工作态度，严谨的工作作风，从事各自岗位的工作。</div>
+            <div>2. 明确公司的奋斗目标和个人工作目标。</div>
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -81,7 +88,7 @@ export default {
   data(){
     return{
       date: {},
-      value: new Date()
+      activeName: '1'
     }
   },
   mounted(){
@@ -164,5 +171,21 @@ export default {
 }
 .bottom-left, .bottom-right{
   flex: 1;
+}
+.bottom-left .box-card{
+  margin: 30px 0;
+  width: 580px;
+  height: 200px;
+}
+.bottom-left .clock{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box-card .el-button{
+  font-size: 25px;
+  font-weight: bold;
+  width: 250px;
+  height: 60px;
 }
 </style>
