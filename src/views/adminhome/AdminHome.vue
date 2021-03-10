@@ -13,7 +13,7 @@
           <img src="~assets/img/welcome-icon.png" alt="">
           <span slot="title">推股管理系统</span>
         </el-menu-item>
-        <el-menu-item index="/adminhome/index">
+        <el-menu-item index="/adminhome">
           <i class="el-icon-s-promotion"></i>
           <span slot="title">首页</span>
         </el-menu-item>
@@ -68,7 +68,8 @@
       </div>
       <div class="content-bottom">
         <!--给子路由占位置的占位符-->
-        <router-view/>
+        <admin-index v-if="this.$route.path == '/adminhome'"/>
+        <router-view v-else/>
       </div>
     </div>
   </div>
@@ -77,6 +78,7 @@
 <script>
 import { removeToken } from 'utils/auth'
 import { getLoginOut } from 'network/login'
+import AdminIndex from './AdminIndex'
 
 export default {
   name: 'AdminHome',
@@ -86,13 +88,14 @@ export default {
       name: localStorage.getItem('name')
     };
   },
+  components: { AdminIndex },
   methods: {
     handleSelect(key){
       if(key == '/index'){
         this.$router.push('/index');
       }
-      else if (key == '/adminhome/index'){
-        this.$router.push('/adminhome/index')
+      else if (key == '/adminhome'){
+        this.$router.push('/adminhome')
       }
       else if (key == '/adminhome/user'){
         this.$router.push('/adminhome/user')
