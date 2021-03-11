@@ -43,18 +43,19 @@
     <div class="index-bottom">
       <div class="bottom-left">
         <el-card class="box-card clock">
-          <el-button v-if="this.isLate==='未打卡'" type="info" @click="admin_clock()">打 卡</el-button>
-          <el-button v-else-if="this.isLate==='已迟到'" type="danger">已迟到！</el-button>
-          <el-button v-else type="success">已打卡！</el-button>
+          <el-button v-if="this.isLate==='已打卡'" type="success">您已打卡！</el-button>
+          <el-button v-else-if="this.isLate==='已迟到'" type="danger">您已迟到！</el-button>
+          <el-button v-else type="info" @click="admin_clock()">打 卡</el-button>
+
         </el-card>
         <el-card class="box-card">
           <div slot="header">
             <span>每日计划</span>
-            <el-button type="warning" plain style="float: right;padding: 5px">修改</el-button>
+            <el-button type="info" plain style="float: right;padding: 5px" @click="admin_target()">制定</el-button>
           </div>
           <el-input
             type="textarea"
-            :rows="4"
+            :rows="6"
             placeholder="请输入内容"
             v-model="textarea">
           </el-input>
@@ -99,8 +100,8 @@ export default {
     return{
       date: {},
       activeName: '1',
-      textarea: '',
-      isLate: '未打卡'
+      textarea: localStorage.getItem('target'),
+      isLate: localStorage.getItem('isLate')
     }
   },
   mounted(){
@@ -109,6 +110,10 @@ export default {
     let myTimeDisplay = setInterval(() => {
       this.getCurrentTime(); //每秒更新一次时间
     }, 1000);
+    //判断一下打卡的按钮是什么状态。
+    if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
+      localStorage.removeItem('isLate')
+    }
   },
   methods: {
     /**时间相关的函数 */
@@ -163,14 +168,38 @@ export default {
 
     /**打卡事件 */
     admin_clock(){
-      if(this.date.hour > 9){
-        alert('您已迟到！');
+      if(this.date.hour >= 9 && this.date.hour < 18){ //早上九点开始到下午六点前，打卡都算迟到
+        this.$message({
+          type: 'error',
+          message: '您已迟到！'
+        })
         this.isLate = '已迟到'
+        localStorage.setItem('isLate',this.isLate)
       }
-      else{
-        alert('您已签到！');
-        this.isLate = '已签到'
+      else if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
+        this.$message({
+          type: 'warning',
+          message: '不在考勤范围内，不能打卡！'
+        })
+        localStorage.removeItem('isLate')
       }
+      else{ //实际就是早上七点开始到九点前是打卡时间。
+        this.$message({
+          type: 'success',
+          message: '打卡成功~'
+        })
+        this.isLate = '已打卡'
+        localStorage.setItem('isLate',this.isLate)
+      }
+    },
+
+    /**每日计划事件 */
+    admin_target(){
+      this.$message({
+        type: 'success',
+        message: '制定成功~ 新的一天，更加努力！'
+      })
+      localStorage.setItem('target', this.textarea)
     }
   }
 }
@@ -178,7 +207,7 @@ export default {
 
 <style scoped>
 .index-top{
-  margin:30px 50px;
+  margin:40px 50px;
 }
 .index-top .top-date{
   flex: 1;
@@ -199,8 +228,13 @@ export default {
 }
 .bottom-left .box-card{
   margin: 30px 0;
-  width: 580px;
+  width: 600px;
+}
+.bottom-left .box-card:nth-child(1){
   height: 200px;
+}
+.bottom-left .box-card:nth-child(2){
+  height: 250px;
 }
 .bottom-left .clock{
   display: flex;
