@@ -43,11 +43,21 @@
     <div class="index-bottom">
       <div class="bottom-left">
         <el-card class="box-card clock">
-          <el-button type="info">打 卡</el-button>
+          <el-button v-if="this.isLate==='未打卡'" type="info" @click="admin_clock()">打 卡</el-button>
+          <el-button v-else-if="this.isLate==='已迟到'" type="danger">已迟到！</el-button>
+          <el-button v-else type="success">已打卡！</el-button>
         </el-card>
         <el-card class="box-card">
-          <span slot="header">每日计划</span>
-          放动态标签即可~
+          <div slot="header">
+            <span>每日计划</span>
+            <el-button type="warning" plain style="float: right;padding: 5px">修改</el-button>
+          </div>
+          <el-input
+            type="textarea"
+            :rows="4"
+            placeholder="请输入内容"
+            v-model="textarea">
+          </el-input>
         </el-card>
       </div>
       <div class="bottom-right">
@@ -88,7 +98,9 @@ export default {
   data(){
     return{
       date: {},
-      activeName: '1'
+      activeName: '1',
+      textarea: '',
+      isLate: '未打卡'
     }
   },
   mounted(){
@@ -99,6 +111,7 @@ export default {
     }, 1000);
   },
   methods: {
+    /**时间相关的函数 */
     getCurrentTime(){
       let systemDate = new Date();
       this.date = {
@@ -146,6 +159,18 @@ export default {
       else if (this.date.hour < 10){
         this.date.hour = '0' +this.date.hour
       }
+    },
+
+    /**打卡事件 */
+    admin_clock(){
+      if(this.date.hour > 9){
+        alert('您已迟到！');
+        this.isLate = '已迟到'
+      }
+      else{
+        alert('您已签到！');
+        this.isLate = '已签到'
+      }
     }
   }
 }
@@ -182,7 +207,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.box-card .el-button{
+.box-card .el-button:nth-child(1){
   font-size: 25px;
   font-weight: bold;
   width: 250px;

@@ -48,8 +48,8 @@
               </article>
             </div>
             <div class="update-button">
-              <el-button type="warning" icon="el-icon-check" round></el-button>
-              <el-button type="danger" icon="el-icon-delete" round></el-button>
+              <el-button type="warning" icon="el-icon-check" round plain></el-button>
+              <el-button type="danger" icon="el-icon-delete" round plain></el-button>
             </div>
           </div>
         </el-tab-pane>

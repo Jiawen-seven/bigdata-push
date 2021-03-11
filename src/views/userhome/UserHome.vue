@@ -19,7 +19,9 @@ export default {
         type: 'warning'
       }).then(() => {
         //1.清除localStorage 和 token
-        localStorage.clear();
+        // localStorage.clear(); 退出不要全部清除，有些内容要保存
+        localStorage.removeItem('name')
+        localStorage.removeItem('flag')
         removeToken()//本地cookie中的token
         this.getLoginOut()//后端中的token
         //2.回到index页面
