@@ -27,10 +27,10 @@
               <i class="el-icon-user-solid"></i>
               <span>用户管理</span>
             </el-menu-item>
-            <el-menu-item index="/adminhome/admin">
+            <!-- <el-menu-item index="/adminhome/admin">
               <i class="el-icon-user"></i>
               <span>角色管理</span>
-            </el-menu-item>
+            </el-menu-item> -->
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3">
@@ -100,9 +100,9 @@ export default {
       else if (key == '/adminhome/user'){
         this.$router.push('/adminhome/user')
       }
-      else if (key == '/adminhome/admin'){
-        this.$router.push('/adminhome/admin')
-      }
+      // else if (key == '/adminhome/admin'){
+      //   this.$router.push('/adminhome/admin')
+      // }
       else{
         this.$router.push('/adminhome/data')
       }

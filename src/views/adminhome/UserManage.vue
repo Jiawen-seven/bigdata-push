@@ -16,7 +16,7 @@
       <el-table-column
         label="Email"
         prop="email"
-        width="150">
+        width="180">
       </el-table-column>
       <el-table-column
         label="StockCount"
@@ -51,9 +51,6 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-          <el-button
-            size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
         </template>
@@ -70,6 +67,7 @@ export default {
   data(){
     return {
       tableData: [],
+      data: [],
       search: ''
     }
   },
@@ -80,16 +78,46 @@ export default {
     /**网络请求相关 */
     getUserInfo(){
       getUserInfo().then(res => {
-        this.tableData = res.data
-        console.log(res)
+        this.data = res.data
+        this.tableData = this.handleData()
       });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
+    handleData(){
+      let data = this.data
+      for(let i=0; i<data.length;i++){
+        if(data[i].stockCount==="0"){
+          data[i].stockCount = "每天两次"
+        }
+        else if (data[i].stockCount==="1"){
+          data[i].stockCount = "每天一次"
+        }
+        else if (data[i].stockCount==="2"){
+          data[i].stockCount = "每周3-5次"
+        }
+        else if (data[i].stockCount==="3"){
+          data[i].stockCount = "每周1-2次"
+        }
+        for(let j = 0; j<data[i].stockMessages.length;j++){
+          console.log(data[i].stockMessages[j])
+          if(data[i].stockMessages[j]==="0"){
+            data[i].stockMessages[j] = "实时行情"
+          }
+          else if(data[i].stockMessages[j]==="1"){
+            data[i].stockMessages[j] = "股评/热帖"
+          }
+          else if(data[i].stockMessages[j]==="2"){
+            data[i].stockMessages[j] = "热股"
+          }
+          else if(data[i].stockMessages[j]==="3"){
+            data[i].stockMessages[j] = "其他"
+          }
+        }
+      }
+      return data
     },
     handleDelete(index, row) {
       console.log(index, row);
-    }
+    },
   }
 }
 </script>

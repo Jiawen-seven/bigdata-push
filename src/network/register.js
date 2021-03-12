@@ -1,5 +1,6 @@
 import {request} from './request'
 
+//注册
 export function postRegisterData(registerForm){
   return request({
     url:'/registered',

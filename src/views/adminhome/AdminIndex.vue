@@ -33,7 +33,7 @@
           <el-card shadow="hover" body-style="background-color: #F56C6C;color: #fff;display: flex;">
             <div class="top-date">
               <span>注册用户</span>
-              <h2>{{10}}个</h2>
+              <h2>{{userNum}}个</h2>
             </div>
             <i class="el-icon-user"></i>
           </el-card>
@@ -46,7 +46,6 @@
           <el-button v-if="this.isLate==='已打卡'" type="success">您已打卡！</el-button>
           <el-button v-else-if="this.isLate==='已迟到'" type="danger">您已迟到！</el-button>
           <el-button v-else type="info" @click="admin_clock()">打 卡</el-button>
-
         </el-card>
         <el-card class="box-card">
           <div slot="header">
@@ -94,6 +93,8 @@
 </template>
 
 <script>
+import {getUserInfo} from 'network/user'
+
 export default {
   name: 'AdminIndex',
   data(){
@@ -101,10 +102,12 @@ export default {
       date: {},
       activeName: '1',
       textarea: localStorage.getItem('target'),
-      isLate: localStorage.getItem('isLate')
+      isLate: localStorage.getItem('isLate'),
+      userNum: 0
     }
   },
   mounted(){
+    //调用时间的函数
     this.getCurrentTime();
     clearInterval(myTimeDisplay);
     let myTimeDisplay = setInterval(() => {
@@ -114,6 +117,8 @@ export default {
     if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
       localStorage.removeItem('isLate')
     }
+    //调用注册用户的方法
+    this.getUserInfo()
   },
   methods: {
     /**时间相关的函数 */
@@ -200,6 +205,13 @@ export default {
         message: '制定成功~ 新的一天，更加努力！'
       })
       localStorage.setItem('target', this.textarea)
+    },
+
+    /**网络请求相关方法 */
+    getUserInfo(){
+      getUserInfo().then(res => {
+        this.userNum = res.data.length;
+      });
     }
   }
 }

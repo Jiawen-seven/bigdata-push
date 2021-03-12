@@ -11,7 +11,7 @@ const AdminHome = () => import('../views/adminhome/AdminHome')
 const AdminCenter = () => import('../views/adminhome/AdminCenter')
 // const AdminIndex = () => import('../views/adminhome/AdminIndex.vue')
 const UserManage = () => import('../views/adminhome/UserManage.vue')
-const AdminManage = () => import('../views/adminhome/AdminManage.vue')
+// const AdminManage = () => import('../views/adminhome/AdminManage.vue')
 const AdminData = () => import('../views/adminhome/AdminData.vue')
 
 const router = new VueRouter({
@@ -60,10 +60,10 @@ const router = new VueRouter({
           path: 'user',
           component: UserManage
         },
-        { 
-          path: 'admin',
-          component: AdminManage
-        },
+        // { 
+        //   path: 'admin',
+        //   component: AdminManage
+        // },
         { 
           path: 'data',
           component: AdminData
