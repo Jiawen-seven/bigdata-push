@@ -6,3 +6,10 @@ export function getUserInfo(){
     url: '/system/user/getAllRegisteredUser'
   })
 }
+
+//获取管理员/用户个人信息
+export function getPersonInfo(){
+  return request({
+    url: 'system/user/getRegisteredUser/'+`${localStorage.getItem('name')}`
+  })
+}

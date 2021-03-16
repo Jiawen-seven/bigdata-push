@@ -63,14 +63,11 @@
             </el-time-select>
           </el-form-item>
           <el-form-item label="您希望消息提醒的频率" prop="stockCount">
-            <el-radio-group v-model="registerForm.stockCount" @change="getValue()" style="margin-bottom: -10px">
+            <el-radio-group v-model="registerForm.stockCount" style="margin-bottom: -10px">
               <el-radio label="0">每天两次</el-radio>
               <el-radio label="1">每天一次</el-radio>
               <el-radio label="2">每周3-5次</el-radio>
               <el-radio label="3">每周1-2次</el-radio>
-              <br/>
-              <el-radio label="4">其他</el-radio>
-              <input v-show="ifShow" class="else-input" type="text" style="margin: -15px">
             </el-radio-group>
           </el-form-item>
           <el-form-item label="您希望的提醒方式" prop="stockRemind">
@@ -103,7 +100,6 @@ export default {
   data() {
     return {
       isShow: false,
-      ifShow: false,
       stocks: [],
       registerForm: {
         name: '',
@@ -158,13 +154,6 @@ export default {
     },
     else_input(){
       this.isShow = !this.isShow
-    },
-    getValue(){
-      if(this.registerForm.stockCount == '其他'){
-        this.ifShow = true
-      } else {
-        this.ifShow = false
-      }
     },
     querySearch(queryString, cb) {
       var stocks = this.stocks;

@@ -20,15 +20,15 @@
             <div class="person-message">
               <article class="message-detail">
                 <i class="el-icon-user"></i>
-                <span>管理员名称：{{name}}</span>
+                <span>管理员：{{name}}</span>
               </article>
               <article class="message-detail">
                 <i class="el-icon-phone"></i>
-                <span>联系电话：13168597846</span>
+                <span>电话：{{phone}}</span>
               </article>
               <article class="message-detail">
                 <i class="el-icon-s-custom"></i>
-                <span>所属角色：普通管理员</span>
+                <span>角色：{{remark}}</span>
               </article>
             </div>
           </div>
@@ -39,17 +39,42 @@
               <article class="message-detail">
                 <i class="el-icon-user"></i>
                 <span>您的姓名：</span>
-                <el-input v-model="adminName" placeholder="输入修改的名字"></el-input>
+                <el-input v-model="adminName" placeholder="请输入修改的名字"></el-input>
               </article>
               <article class="message-detail">
                 <i class="el-icon-phone"></i>
-                <span>您的电话：</span>
-                <el-input v-model="adminPhone" placeholder="输入修改的电话"></el-input>
+                <span>您的手机：</span>
+                <el-input v-model="adminPhone" placeholder="请输入修改的电话"></el-input>
               </article>
             </div>
             <div class="update-button">
-              <el-button type="warning" icon="el-icon-check" round plain></el-button>
-              <el-button type="danger" icon="el-icon-delete" round plain></el-button>
+              <el-button type="warning" plain @click="modifyMessage()">修 改</el-button>
+              <el-button type="danger" plain @click="clear()">重 置</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="修改密码" name="three">
+          <div class="card-message">
+            <div class="update-password">
+              <article class="message-detail">
+                <i class="el-icon-phone-outline"></i>
+                <span>您的手机号：</span>
+                <el-input v-model="adminPhone1" placeholder="请输入手机号"></el-input>
+              </article>
+              <article class="message-detail">
+                <i class="el-icon-lock"></i>
+                <span>您的新密码：</span>
+                <el-input v-model="adminPassword" placeholder="请输入新密码"></el-input>
+              </article>
+              <article class="message-detail">
+                <i class="el-icon-key"></i>
+                <span>再次输入新密码：</span>
+                <el-input v-model="adminPassword1" placeholder="请再次输入新密码"></el-input>
+              </article>
+            </div>
+            <div class="update-button">
+              <el-button type="warning" plain @click="modifyPassword()">修 改</el-button>
+              <el-button type="danger" plain @click="clear()">重 置</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -59,18 +84,31 @@
 </template>
 
 <script>
+import {getPersonInfo} from 'network/user';
+import { getLoginOut } from 'network/login';
+import { removeToken } from 'utils/auth';
+
 export default {
   name: 'AdminCenter',
   data(){
     return{
       activeName: 'first',
       imageUrl: '',
-      name: localStorage.getItem('name'),
+      name: '',
+      phone:'',
+      remark:'',
       adminName: '',
-      adminPhone: ''
+      adminPhone: '',
+      adminPhone1: '',
+      adminPassword: '',
+      adminPassword1: ''
     }
   },
+  mounted(){
+    this.getPersonInfo()
+  },
   methods:{
+    /**上传头像相关的函数 */
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
     },
@@ -85,6 +123,64 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
       return isJPG && isLt2M;
+    },
+    /**修改信息和修改密码相关函数 */
+    modifyMessage(){
+      if(this.adminName == '' && this.adminPhone == ''){
+        this.$message.error('您无修改的内容！')
+      }
+      else if (this.adminName !='' && this.adminPhone == ''){
+        this.$message.success('您已成功修改姓名！')
+      }
+      else if (this.adminName == '' && this.adminPhone != ''){
+        this.$message.success('您已成功修改手机号！')
+      }
+      else{
+        this.$message.success('您已成功修改姓名和手机号！')
+      }
+    },
+    modifyPassword(){
+      if(this.adminPhone1 == ''){
+        this.$message.error('手机号不能为空！')
+      }
+      else if (this.adminPassword ==''){
+        this.$message.error('新密码不能为空！')
+      }
+      else if (this.adminPassword1 == ''){
+        this.$message.error('请再次输入新密码！')
+      }
+      else if (this.adminPassword != this.adminPassword1){
+        this.$message.error('您输入的两次密码不一致！')
+      }
+      else{
+        this.$message.success('您已成功修改密码，请重新登录！')
+        localStorage.removeItem('name')
+        localStorage.removeItem('flag')
+        removeToken()//本地cookie中的token
+        this.getLoginOut()//后端中的token
+        this.$router.push('/login')
+      }
+    },
+    clear(){
+      this.adminName = ''
+      this.adminPhone = ''
+      this.adminPhone1 = ''
+      this.adminPassword = ''
+      this.adminPassword1 = ''
+    },
+
+    //网络请求相关方法
+    getPersonInfo(){
+      getPersonInfo().then(res => {
+        this.name = res.data.name;
+        this.phone = res.data.phone;
+        this.remark = res.data.remark;
+      })
+    },
+    getLoginOut(){
+      getLoginOut().then(res =>{
+        console.log(res)
+      })
     }
   }
 }
@@ -139,15 +235,18 @@ export default {
 .person-message .message-detail, .update-message .message-detail{
   margin-bottom: 30px;
 }
+.update-password .message-detail{
+  margin-bottom: 10px;
+}
 .message-detail i {
   margin-right: 10px;
 }
-.update-message .message-detail .el-input__inner{
-  margin-top: 10px;
+.update-message .message-detail .el-input__inner,.update-password .message-detail .el-input__inner{
+  margin-top: 5px;
   width: 80%;
 }
-.el-input__inner:focus{
-  color: #E6A23C;
+.card-message .el-input__inner:focus{
+  border:1px solid #E6A23C;
 }
 .update-button{
   position: relative;
