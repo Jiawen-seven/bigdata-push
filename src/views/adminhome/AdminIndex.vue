@@ -43,9 +43,7 @@
     <div class="index-bottom">
       <div class="bottom-left">
         <el-card class="box-card clock">
-          <el-button v-if="this.isLate==='已打卡'" type="success">您已打卡！</el-button>
-          <el-button v-else-if="this.isLate==='已迟到'" type="danger">您已迟到！</el-button>
-          <el-button v-else type="info" @click="admin_clock()">打 卡</el-button>
+          <el-button type="info" @click="admin_clock()">打 卡</el-button>
         </el-card>
         <el-card class="box-card">
           <div slot="header">
@@ -102,8 +100,8 @@ export default {
       date: {},
       activeName: '1',
       textarea: localStorage.getItem('target'),
-      isLate: localStorage.getItem('isLate'),
-      userNum: 0
+      userNum: 0,
+      times: 0
     }
   },
   mounted(){
@@ -113,10 +111,6 @@ export default {
     let myTimeDisplay = setInterval(() => {
       this.getCurrentTime(); //每秒更新一次时间
     }, 1000);
-    //判断一下打卡的按钮是什么状态。
-    if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
-      localStorage.removeItem('isLate')
-    }
     //调用注册用户的方法
     this.getUserInfo()
   },
@@ -173,28 +167,32 @@ export default {
 
     /**打卡事件 */
     admin_clock(){
-      if(this.date.hour >= 9 && this.date.hour < 18){ //早上九点开始到下午六点前，打卡都算迟到
-        this.$message({
-          type: 'error',
-          message: '您已迟到！'
-        })
-        this.isLate = '已迟到'
-        localStorage.setItem('isLate',this.isLate)
-      }
-      else if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
+      this.times ++;
+      if(this.times > 1){
         this.$message({
           type: 'warning',
-          message: '不在考勤范围内，不能打卡！'
+          message: '请勿重复打卡！'
         })
-        localStorage.removeItem('isLate')
       }
-      else{ //实际就是早上七点开始到九点前是打卡时间。
-        this.$message({
-          type: 'success',
-          message: '打卡成功~'
-        })
-        this.isLate = '已打卡'
-        localStorage.setItem('isLate',this.isLate)
+      else{
+        if(this.date.hour >= 9 && this.date.hour < 18){ //早上九点开始到下午六点前，打卡都算迟到
+          this.$message({
+            type: 'error',
+            message: '您已迟到！'
+          })
+        }
+        else if(this.date.hour < 7 || this.date.hour >= 18){  //下午六点开始到第二天早上七点前，是不允许打卡
+          this.$message({
+            type: 'warning',
+            message: '不在考勤范围内，不能打卡！'
+          })
+        }
+        else{ //实际就是早上七点开始到九点前是打卡时间。
+          this.$message({
+            type: 'success',
+            message: '打卡成功√'
+          })
+        }
       }
     },
 
