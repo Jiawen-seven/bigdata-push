@@ -5,7 +5,7 @@
     <div class="login_form">
       <div class="login_title">
         <span v-show="isShow">账号密码登录</span>
-        <span v-show="!isShow">找回密码</span>
+        <span v-show="!isShow">重置密码</span>
       </div>
       <el-form v-show="isShow" :model="loginForm" status-icon :rules="rules" ref="loginForm" class="push_loginForm">
         <el-form-item prop="account">
@@ -36,7 +36,7 @@
           <el-input type="password" v-model="forgetForm.newpassword" placeholder="请再次输入新密码" clearable></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="warning" @click="searchForm('forgetForm')">找 回</el-button>
+          <el-button type="warning" @click="searchForm('forgetForm')">重 置</el-button>
         </el-form-item>
       </el-form>
       <div class="login-footer">
@@ -51,7 +51,7 @@
 
 <script>
 import * as validator from 'utils/validateRules'
-import { getLoginCore, postLoginData } from 'network/login'
+import { getLoginCore, postLoginData, getPassword } from 'network/login'
 import { setToken, removeToken } from 'utils/auth'
 
 export default {
@@ -88,6 +88,9 @@ export default {
         code: [{ message: '验证码不能为空！', trigger: 'change' }]
       },
     }
+  },
+  mounted(){
+    this.getLoginCore()
   },
   methods: {
     //网络请求的相关方法
@@ -138,6 +141,27 @@ export default {
         }
       })
     },
+    getPassword(){
+      getPassword(this.forgetForm.phone,this.forgetForm.password).then(res => {
+        // console.log(res)
+        if(res.code == 200){
+          this.$notify({
+            title: '成功',
+            message: '重置密码成功！',
+            type: 'success'
+          });
+          this.forgetForm.phone = '';
+          this.forgetForm.password = '';
+          this.forgetForm.newpassword = '';
+        }
+        else{
+          this.$notify.error({
+            title: '失败',
+            message: '对不起，您输入的手机号有误！'
+          });
+        }
+      })
+    },
 
     //普通方法
     goBack(){
@@ -158,10 +182,17 @@ export default {
           return false;
         }
       });
+    },
+    searchForm(formName){
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.getPassword()
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     }
-  },
-  mounted(){
-    this.getLoginCore()
   }
 }
 </script>

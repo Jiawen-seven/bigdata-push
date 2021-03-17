@@ -39,12 +39,12 @@
               <article class="message-detail">
                 <i class="el-icon-user"></i>
                 <span>您的姓名：</span>
-                <el-input v-model="adminName" placeholder="请输入修改的名字"></el-input>
+                <el-input v-model="adminName" placeholder="请输入修改的名字" clearable></el-input>
               </article>
               <article class="message-detail">
                 <i class="el-icon-phone"></i>
                 <span>您的手机：</span>
-                <el-input v-model="adminPhone" placeholder="请输入修改的电话"></el-input>
+                <el-input v-model="adminPhone" placeholder="请输入修改的电话" clearable></el-input>
               </article>
             </div>
             <div class="update-button">
@@ -59,17 +59,17 @@
               <article class="message-detail">
                 <i class="el-icon-phone-outline"></i>
                 <span>您的手机号：</span>
-                <el-input v-model="adminPhone1" placeholder="请输入手机号"></el-input>
+                <el-input v-model="adminPhone1" placeholder="请输入手机号" clearable></el-input>
               </article>
               <article class="message-detail">
                 <i class="el-icon-lock"></i>
                 <span>您的新密码：</span>
-                <el-input v-model="adminPassword" placeholder="请输入新密码"></el-input>
+                <el-input v-model="adminPassword" placeholder="请输入新密码" clearable></el-input>
               </article>
               <article class="message-detail">
                 <i class="el-icon-key"></i>
                 <span>再次输入新密码：</span>
-                <el-input v-model="adminPassword1" placeholder="请再次输入新密码"></el-input>
+                <el-input v-model="adminPassword1" placeholder="请再次输入新密码" clearable></el-input>
               </article>
             </div>
             <div class="update-button">
@@ -85,7 +85,7 @@
 
 <script>
 import {getPersonInfo} from 'network/user';
-import { getLoginOut } from 'network/login';
+import { getLoginOut, getPassword } from 'network/login';
 import { removeToken } from 'utils/auth';
 
 export default {
@@ -153,12 +153,7 @@ export default {
         this.$message.error('您输入的两次密码不一致！')
       }
       else{
-        this.$message.success('您已成功修改密码，请重新登录！')
-        localStorage.removeItem('name')
-        localStorage.removeItem('flag')
-        removeToken()//本地cookie中的token
-        this.getLoginOut()//后端中的token
-        this.$router.push('/login')
+        this.getPassword()
       }
     },
     clear(){
@@ -181,7 +176,30 @@ export default {
       getLoginOut().then(res =>{
         console.log(res)
       })
-    }
+    },
+    getPassword(){
+      getPassword(this.adminPhone1,this.adminPassword).then(res => {
+        console.log(res)
+        if(res.code == 200){
+          this.$notify({
+            title: '成功',
+            message: '重置密码成功，请重新登录！',
+            type: 'success'
+          });
+          localStorage.removeItem('name')
+          localStorage.removeItem('flag')
+          removeToken()//本地cookie中的token
+          this.getLoginOut()//后端中的token
+          this.$router.push('/login')
+        }
+        else{
+          this.$notify.error({
+            title: '失败',
+            message: '对不起，您输入的手机号有误！'
+          });
+        }
+      })
+    },
   }
 }
 </script>

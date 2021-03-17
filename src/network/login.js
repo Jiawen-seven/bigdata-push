@@ -25,3 +25,15 @@ export function getLoginOut(){
     url:'/logout'
   })
 }
+
+//忘记密码/修改密码
+export function getPassword(phonenumber,password){
+  return request({
+    url: '/system/user/forgetPwd',
+    method: 'post',
+    data: {
+      phonenumber,
+      password
+    }
+  })
+}
